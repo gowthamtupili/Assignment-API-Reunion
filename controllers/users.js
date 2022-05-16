@@ -91,7 +91,7 @@ module.exports.showUserInfo = async (req, res) => {
   const authUser = await User.findById(app.locals.authUserID);
   const data = {
     User_Name: `${authUser.UserName}`,
-    no_of_followers: `${authUser.Followers.length}`,
+    no_of_followers: `${authUser.Followers}`,
     no_of_following: `${authUser.Following.length}`,
   };
   res.json(data);
