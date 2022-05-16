@@ -76,6 +76,7 @@ module.exports.unFollowUser = async (req, res) => {
       num1 = num1 - 1;
       foundUser.Followers = num1;
       await authUser.save();
+      await foundUser.save();
       // console.log(authUser);
     }
     res.json(`User Unfollowed user with id: ${id}`);
