@@ -2,7 +2,6 @@ const User = require("../models/user");
 const Post = require("../models/post");
 const jwt = require("jsonwebtoken");
 
-
 const express = require("express");
 const app = express();
 
@@ -38,23 +37,26 @@ module.exports.followUser = async (req, res) => {
   // To check if req.params.id is valid id for User.
   try {
     const foundUser = await User.findById(id);
+    if (app.locals.authUserID === id) {
+      return res.json(`Given ID is the ID of current user`);
+    }
+
+    const isFollower = authUser.Following.includes(id);
+    if (!isFollower) {
+      authUser.Following.push(`${id}`);
+      await authUser.save();
+      var num = foundUser.Followers;
+      num = num + 1;
+      foundUser.Followers = num;
+      await foundUser.save();
+      // console.log(authUser);
+    } else {
+      return res.json("The User is already following");
+    }
+    res.json(`User Started following user with id: ${id}`);
   } catch (error) {
     return res.send(`Invalid User ID`);
   }
-
-  if (app.locals.authUserID === id) {
-    return res.json(`Given ID is the ID of current user`);
-  }
-
-  const isFollower = authUser.Following.includes(id);
-  if (!isFollower) {
-    authUser.Following.push(`${id}`);
-    await authUser.save();
-    console.log(authUser);
-  } else {
-    return res.json("The User is already following");
-  }
-  res.json(`User Started following user with id: ${id}`);
 };
 
 module.exports.unFollowUser = async (req, res) => {
@@ -63,21 +65,24 @@ module.exports.unFollowUser = async (req, res) => {
   // To check if req.params.id is valid id for User.
   try {
     const foundUser = await User.findById(id);
+    const isFollower = authUser.Following.includes(id);
+    if (!isFollower) {
+      return res.json(`The current user is not following the user with ${id}`);
+    } else {
+      authUser.Following = authUser.Following.filter(
+        (id1) => id1 !== id.toString()
+      );
+      var num1 = foundUser.Followers;
+      num1 = num1 - 1;
+      foundUser.Followers = num1;
+      await authUser.save();
+      // console.log(authUser);
+    }
+    res.json(`User Unfollowed user with id: ${id}`);
+    // Remove id from authUser followers array.
   } catch (error) {
     return res.send(`Invalid User ID`);
   }
-  const isFollower = authUser.Following.includes(id);
-  if (!isFollower) {
-    return res.json(`The current user is not following the user with ${id}`);
-  } else {
-    authUser.Following = authUser.Following.filter(
-      (id1) => id1 !== id.toString()
-    );
-    await authUser.save();
-    // console.log(authUser);
-  }
-  res.json(`User Unfollowed user with id: ${id}`);
-  // Remove id from authUser followers array.
 };
 
 module.exports.showUserInfo = async (req, res) => {

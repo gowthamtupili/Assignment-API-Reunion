@@ -5,7 +5,7 @@ const UserSchema = new Schema({
   UserName: String,
   Email: String,
   Password: String,
-  Followers: [],
+  Followers: Number,
   Following: [],
   Posts: [
     {
