@@ -37,6 +37,10 @@ mongoose
   });
 
 
+app.get('/', (req, res) => {
+  res.json('Home Page for Backend Assignment for Reunion');
+})
+
 app.use("/api", userRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/comment/", commentRoutes);
