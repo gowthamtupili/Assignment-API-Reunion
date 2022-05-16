@@ -55,7 +55,7 @@ module.exports.followUser = async (req, res) => {
     }
     res.json(`User Started following user with id: ${id}`);
   } catch (error) {
-    return res.send(`Invalid User ID`);
+    return res.json(error);
   }
 };
 
@@ -82,7 +82,7 @@ module.exports.unFollowUser = async (req, res) => {
     res.json(`User Unfollowed user with id: ${id}`);
     // Remove id from authUser followers array.
   } catch (error) {
-    return res.send(`Invalid User ID`);
+    return res.send(error);
   }
 };
 
